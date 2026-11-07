@@ -1,0 +1,209 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{TianjinU}[2026/11/07 Minimalist Tianjin University Beamer theme]
+% Adapted from rexera/minimalist-pku-beamer-2026 (MIT).
+% Keep this package, LICENSE and Figures/TJU-emblem-names.pdf together.
+\RequirePackage{iftex}
+\ifXeTeX\else
+  \PackageError{TianjinU}{Please compile with XeLaTeX}{Use latexmk -xelatex main.tex.}
+\fi
+% The supplied vector lockup is a PDF 1.7 asset.
+\special{pdf:minorversion 7}
+\RequirePackage{etoolbox}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+\RequirePackage{booktabs}
+
+\newif\iftju@sectionpages
+\tju@sectionpagestrue
+\newif\iftju@fonts
+\tju@fontstrue
+\DeclareOptionBeamer{sectionpages}[true]{\csname tju@sectionpages#1\endcsname}
+\DeclareOptionBeamer{fonts}[true]{\csname tju@fonts#1\endcsname}
+\ProcessOptionsBeamer
+
+% Serif Chinese and Latin typography, with a TeX Live / Overleaf fallback.
+\iftju@fonts
+  \@ifpackageloaded{ctex}{}{\RequirePackage[UTF8,fontset=none,scheme=plain]{ctex}}
+  \usefonttheme{serif}
+  \IfFontExistsTF{Songti SC}{%
+    \setCJKmainfont{Songti SC}[AutoFakeSlant=0.2]
+    \setCJKsansfont{Songti SC}[AutoFakeSlant=0.2]
+    \setCJKmonofont{Songti SC}
+  }{%
+    \setCJKmainfont{FandolSong-Regular}[Extension=.otf,BoldFont=FandolSong-Bold,AutoFakeSlant=0.2]
+    \setCJKsansfont{FandolSong-Regular}[Extension=.otf,BoldFont=FandolSong-Bold,AutoFakeSlant=0.2]
+    \setCJKmonofont{FandolFang-Regular}[Extension=.otf]
+  }
+  % File names also work when TeX fonts are absent from the system font cache.
+  \setmainfont{XCharter}[Extension=.otf,UprightFont=*-Roman,
+    BoldFont=*-Bold,ItalicFont=*-Italic,BoldItalicFont=*-BoldItalic]
+  \IfFontExistsTF{Maple Mono NF}{%
+    \setmonofont{Maple Mono NF}[Scale=MatchLowercase]
+  }{\IfFontExistsTF{Maple Mono}{%
+    \setmonofont{Maple Mono}[Scale=MatchLowercase]
+  }{\setmonofont{lmmono10-regular.otf}[Scale=MatchLowercase]}}
+\fi
+
+\mode<presentation>
+\useoutertheme[subsection=false]{smoothbars}
+\useinnertheme{circles}
+
+% Peiyang blue, RGB 0/70/140, from the 2012 TJU VI palette.
+\definecolor{tju}{RGB}{0,70,140}
+\colorlet{tju_blue}{tju}
+\definecolor{tju_darkblue}{RGB}{0,48,96}
+\definecolor{tju_gold}{RGB}{255,200,0}
+\definecolor{tju_red}{RGB}{150,40,0}
+\definecolor{tju_green}{RGB}{0,90,30}
+\definecolor{tju_gray}{RGB}{90,99,110}
+
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{structure}{fg=tju}
+\setbeamercolor{alerted text}{fg=tju_red}
+\setbeamercolor{example text}{fg=tju_green}
+\setbeamercolor{palette primary}{fg=white,bg=tju}
+\setbeamercolor{palette secondary}{fg=white,bg=tju}
+\setbeamercolor{palette tertiary}{fg=white,bg=tju}
+\setbeamercolor{palette quaternary}{fg=white,bg=tju}
+\setbeamercolor{titlelike}{fg=white,bg=tju}
+\setbeamercolor{title}{fg=white,bg=tju}
+\setbeamercolor{subtitle}{fg=white}
+\setbeamercolor{frametitle}{fg=tju,bg=white}
+\setbeamercolor{section in head/foot}{fg=white,bg=tju}
+\setbeamercolor{section in head/foot shaded}{fg=white!55!tju,bg=tju}
+\setbeamercolor{author in head/foot}{fg=white,bg=tju}
+\setbeamercolor{title in head/foot}{fg=white,bg=tju}
+\setbeamercolor{frame number}{fg=white,bg=tju}
+\setbeamercolor{block title}{fg=white,bg=tju}
+\setbeamercolor{block body}{fg=black,bg=tju!6}
+\setbeamercolor{block title alerted}{fg=white,bg=tju_red}
+\setbeamercolor{block body alerted}{fg=black,bg=tju_red!6}
+\setbeamercolor{block title example}{fg=white,bg=tju_green}
+\setbeamercolor{block body example}{fg=black,bg=tju_green!6}
+\setbeamercolor{item projected}{fg=white,bg=tju}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{series=\mdseries,size=\small}
+\setbeamerfont{block title}{series=\bfseries,size=\small}
+\setbeamerfont{block title alerted}{series=\bfseries,size=\small}
+\setbeamerfont{block title example}{series=\bfseries,size=\small}
+\setbeamerfont{author in head/foot}{series=\bfseries,size=\tiny}
+\setbeamerfont{title in head/foot}{series=\bfseries,size=\tiny}
+\setbeamerfont{frame number}{size=\tiny}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{background canvas}[default]
+
+% Override this path when embedding the theme in another project.
+\newcommand{\tju@logofile}{Figures/TJU-emblem-names.pdf}
+\newcommand{\TJUSetLogo}[1]{\renewcommand{\tju@logofile}{#1}}
+\newcommand{\frameofframes}{/}
+\newcommand{\setframeofframes}[1]{\renewcommand{\frameofframes}{#1}}
+
+% Fixed-height smoothbars navigation, shared by content and section pages.
+\newlength{\tju@headheight}
+% Allow both 10pt and 11pt documents to show the complete mini-frame circles.
+\setlength{\tju@headheight}{14pt}
+\setbeamertemplate{headline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=\tju@headheight,dp=0pt,vmode]{section in head/foot}%
+    \vbox to \tju@headheight{\vskip1pt\insertnavigation{\paperwidth}\vss}%
+  \end{beamercolorbox}%
+}
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.5ex,dp=1ex,
+      leftskip=.3cm,rightskip=.3cm]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+    \hfill{\usebeamerfont{title in head/foot}\insertshorttitle}\hfill
+    {\usebeamerfont{frame number}\insertframenumber~\frameofframes~\inserttotalframenumber}%
+  \end{beamercolorbox}%
+}
+
+% Reserve space for the vector lockup; long titles wrap before the logo.
+\newlength{\tju@titleht}
+\newlength{\tju@titledp}
+\newlength{\tju@logoheight}
+\newlength{\tju@logowidth}
+\newlength{\tju@logoyshift}
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \usebeamerfont*{frametitle}%
+  \settoheight{\tju@titleht}{\insertframetitle}%
+  \settodepth{\tju@titledp}{\insertframetitle}%
+  \tju@logoheight=\dimexpr\tju@titleht+\tju@titledp\relax
+  \settowidth{\tju@logowidth}{\includegraphics[height=\tju@logoheight]{\tju@logofile}}%
+  \begin{beamercolorbox}[wd=\paperwidth,sep=.3cm,
+      rightskip=\dimexpr\tju@logowidth+.4cm\relax]{frametitle}%
+    \strut\insertframetitle
+    \ifx\insertframesubtitle\@empty\else
+      \par{\usebeamerfont*{framesubtitle}\usebeamercolor[fg]{framesubtitle}\strut\insertframesubtitle}%
+    \fi
+  \end{beamercolorbox}%
+  \nointerlineskip
+  \tju@logoyshift=\dimexpr\tju@headheight+.3cm+\ht\strutbox-\tju@titleht\relax
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north east,inner sep=0pt]
+      at ([yshift=-\tju@logoyshift,xshift=-.3cm]current page.north east)
+      {\includegraphics[height=\tju@logoheight]{\tju@logofile}};
+  \end{tikzpicture}%
+}
+
+% Same flat title panel as the reference, with the TJU lockup below.
+% \titlegraphic remains available for a repository URL, contact or meeting name.
+\setbeamertemplate{title page}{%
+  \vbox{}\vfill
+  \begingroup\centering
+    \begin{beamercolorbox}[sep=.65em,center,wd=\linewidth]{title}
+      {\usebeamerfont{title}\inserttitle\par}%
+      \ifx\insertsubtitle\@empty\else
+        \vskip.35em{\usebeamerfont{subtitle}\insertsubtitle\par}%
+      \fi
+    \end{beamercolorbox}
+    \vskip.85em
+    {\usebeamerfont{author}\insertauthor\par}
+    \vskip.45em
+    {\usebeamerfont{institute}\insertinstitute\par}
+    \vskip.5em
+    {\usebeamerfont{date}\insertdate\par}
+    \vskip.65em
+    \includegraphics[width=.27\linewidth]{\tju@logofile}\par
+    \ifx\inserttitlegraphic\@empty\else
+      \vskip.6em{\usebeamercolor[fg]{normal text}\inserttitlegraphic\par}%
+    \fi
+  \endgroup
+  \vfill
+}
+
+\setlength{\heavyrulewidth}{1.2pt}
+\setlength{\lightrulewidth}{.5pt}
+\AtBeginSection[]{%
+  \iftju@sectionpages
+    \begin{frame}{目录}
+      \tableofcontents[sectionstyle=show/shaded,subsectionstyle=hide,subsubsectionstyle=hide]
+    \end{frame}
+  \fi
+}
+
+% Color the full natbib citation, including its brackets, when natbib is used.
+\pdfstringdefDisableCommands{\def\quad{ }\def\qquad{ }\def\enspace{ }}
+\AtEndPreamble{%
+  \hypersetup{colorlinks=true,linkcolor=.,citecolor=tju_blue,urlcolor=tju_blue}%
+  \@ifpackageloaded{natbib}{%
+    \NewCommandCopy{\tju@citep}{\citep}
+    \NewCommandCopy{\tju@citet}{\citet}
+    \RenewDocumentCommand{\citep}{s o o m}{%
+      \begingroup\color{tju_blue}%
+      \IfBooleanTF{#1}{\def\tju@citecmd{\tju@citep*}}{\let\tju@citecmd\tju@citep}%
+      \IfNoValueTF{#2}{\tju@citecmd{#4}}%
+        {\IfNoValueTF{#3}{\tju@citecmd[][#2]{#4}}{\tju@citecmd[#2][#3]{#4}}}%
+      \endgroup}
+    \RenewDocumentCommand{\citet}{s o o m}{%
+      \begingroup\color{tju_blue}%
+      \IfBooleanTF{#1}{\def\tju@citecmd{\tju@citet*}}{\let\tju@citecmd\tju@citet}%
+      \IfNoValueTF{#2}{\tju@citecmd{#4}}%
+        {\IfNoValueTF{#3}{\tju@citecmd[][#2]{#4}}{\tju@citecmd[#2][#3]{#4}}}%
+      \endgroup}%
+  }{}%
+}
+\mode<all>

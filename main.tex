@@ -1,0 +1,154 @@
+% !TEX program = xelatex
+% 画幅：aspectratio=169 为 16:9；改为 aspectratio=43 可使用 4:3。
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage{TianjinU}
+\usepackage{amsmath,amssymb,bm,tabularx,array,xurl}
+\usepackage[round,authoryear]{natbib}
+\renewcommand{\bibsection}{} % 避免参考文献自动创建额外导航章节。
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newtheorem{proposition}{命题}
+\setbeamertemplate{theorems}[numbered]
+
+% 日常使用只需修改这些信息，以及下方的正文页面。
+\title[天津大学 Beamer]{天津大学 Beamer 模板}
+\subtitle{Minimalist TJU Beamer 2026}
+\author[author]{author}
+\institute{天津大学\quad 马寅初经济学院}
+\date{2026年11月7日}
+% 可选：封面底部的会议信息、个人主页或项目链接。
+% \titlegraphic{\scriptsize\url{https://www.tju.edu.cn/}}
+
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\section{模板使用}
+
+\begin{frame}{中文与英文排版}
+  中文正文使用\textbf{宋体}，英文使用 XCharter，与参考项目的衬线风格一致。
+  \medskip
+  \begin{itemize}\setlength{\itemsep}{.65em}
+    \item 中文、English 与公式可以自然混排：$y=f(\bm{x})+\varepsilon$。
+    \item 用\textcolor{tju}{\textbf{北洋蓝}}强调核心结论，\alert{提示}使用深红色。
+    \item 代码采用等宽字体：\texttt{latexmk -xelatex main.tex}。
+    \item macOS 优先使用 Songti SC，其他环境自动回退至 FandolSong。
+  \end{itemize}
+  \medskip
+  顶部保留章节导航，右上角使用天津大学矢量校徽与中英文校名组合。
+\end{frame}
+
+\begin{frame}{分栏与内容块}
+  \begin{columns}[T,onlytextwidth]
+    \begin{column}{.47\textwidth}
+      \begin{block}{研究问题}
+        用一句话交代要解释的现象，再说明需要比较的对象。
+      \end{block}
+      \medskip
+      每页围绕一个主要问题展开，给图、公式与结论留出空间。
+    \end{column}
+    \begin{column}{.47\textwidth}
+      \begin{exampleblock}{结果表达}
+        先报告主要发现，再交代单位、样本与适用范围。
+      \end{exampleblock}
+      \begin{alertblock}{方法限制}
+        在结论旁说明影响解释的关键限制。
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{学术内容}
+
+\begin{frame}{公式排版}
+  \begin{block}{带有 L2 惩罚的最小二乘目标}
+    \[
+      \hat{\bm\beta}
+      =\arg\min_{\bm\beta}\left\{
+        \frac{1}{n}\sum_{i=1}^{n}(y_i-\bm{x}_i^{\mathsf T}\bm\beta)^2
+        +\lambda\lVert\bm\beta\rVert_2^2\right\}.
+    \]
+  \end{block}
+  \medskip
+  \begin{itemize}\setlength{\itemsep}{.65em}
+    \item $\bm{x}_i$ 表示输入，$y_i$ 表示目标，$\lambda\geq0$ 控制惩罚强度。
+    \item 用单独一行解释公式的含义，避免只展示符号。
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{定义、定理与命题}
+  \begin{definition}[连续函数]
+    函数 $f$ 在 $x_0$ 处连续，是指 $\lim_{x\to x_0}f(x)=f(x_0)$。
+  \end{definition}
+  \begin{theorem}[最值定理]
+    若 $f$ 在闭区间 $[a,b]$ 上连续，则 $f$ 在该区间上取得最大值与最小值。
+  \end{theorem}
+  \begin{proposition}
+    若 $f$ 在闭区间 $[a,b]$ 上连续，则 $f$ 在该区间上有界。
+  \end{proposition}
+\end{frame}
+
+\begin{frame}{三线表}
+  \begin{table}
+    \centering
+    \caption{模板的常用组成}
+    \renewcommand{\arraystretch}{1.45}
+    \begin{tabularx}{.94\linewidth}{@{}lYY@{}}
+      \toprule
+      \textbf{组成} & \textbf{主要用途} & \textbf{样式}\\
+      \midrule
+      标题与导航 & 组织内容层次 & 北洋蓝与白色\\
+      正文与公式 & 解释方法与结果 & 宋体与衬线英文\\
+      图表与注释 & 提供证据与限制 & 保留图表原有编码\\
+      \bottomrule
+    \end{tabularx}
+  \end{table}
+  \medskip
+  {\small 表格保留可编辑文本；数值列建议右对齐，并在表下注明单位。}
+\end{frame}
+
+\begin{frame}{插入矢量图片}
+  \begin{columns}[c,onlytextwidth]
+    \begin{column}{.50\textwidth}
+      \centering
+      \includegraphics[width=.92\linewidth]{Figures/TJU-emblem-names.pdf}
+    \end{column}
+    \begin{column}{.44\textwidth}
+      \begin{itemize}\setlength{\itemsep}{.8em}
+        \item 校徽和校名使用矢量 PDF。
+        \item 图像按原比例缩放。
+        \item 正文图表放入 \texttt{Figures/}。
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{引用与结束}
+
+\begin{frame}{文献引用}
+  以下沿用原项目的参考文献，演示两种引用方式。
+  \medskip
+  \begin{itemize}\setlength{\itemsep}{1em}
+    \item 括号引用：\citep{langley00}。
+    \item 叙述引用：\citet{mitchell80}。
+    \item 同时引用多篇：\citep{MachineLearningI,kearns89}。
+  \end{itemize}
+  \medskip
+  引用整体（含括号）使用北洋蓝，链接与正文排版一致。
+\end{frame}
+
+\begin{frame}{参考文献}
+  \renewcommand{\bibfont}{\footnotesize}
+  \bibliographystyle{apalike}
+  \bibliography{ref}
+\end{frame}
+
+\begin{frame}{谢谢}
+  \centering
+  {\LARGE\color{tju}\bfseries 感谢聆听，欢迎交流。\par}
+  \bigskip
+  {\large \insertauthor\par}
+  \medskip
+  天津大学\quad 马寅初经济学院
+\end{frame}
+\end{document}
